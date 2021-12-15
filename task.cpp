@@ -1,18 +1,11 @@
-// #include <iostream>
+//TASKS CLI Application challenge
 
-// int main(int argc, char* argv[])
-// {
-//     std::cout << "Hello, world!";
-//     return 0;
-// }
-
-
-//TODO CLI Application challenge
-
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
+#include <numeric>
 #include <vector>
 #include <ctime>
 using namespace std;
@@ -24,24 +17,13 @@ void help()
 }
 
 
-//Companion function for printing in reverse order by recursion
-void printLines(ifstream &fin, int num)
-{
-    string line;
-    if (getline(fin, line))
-    {
-        printLines(fin, num + 1);
-        cout << "[" << num << "] " << line << endl;
-    }
-}
-
-//See all the todos that are not yet complete
+//See all the tasks that are not yet complete
 void listtasks()
 {
     ifstream fin("task.txt");
     if (fin)
     {
-        //Check if there are no todos
+        //Check if there are no tasks
         string temp;
         if (!getline(fin, temp))
         {
@@ -49,7 +31,7 @@ void listtasks()
         }
         else
         {
-            //Prints todo in latest-first fashion
+            //Prints tasks in order of priority ( increasing )
             fin.clear();
             fin.seekg(0, ios::beg);
             int num = 1;
@@ -62,7 +44,7 @@ void listtasks()
             }
 
             sort(values.begin(),values.end(),[](string a,string b){
-                return a[0] >= b[0];
+                return a[0] <= b[0];
             });
 
             for(int i=0;i<values.size();i++){
@@ -72,12 +54,12 @@ void listtasks()
         fin.close();
     }
     else
-    { //If 'todo.txt' file doesn't exists
+    { //If 'task.txt' file doesn't exists
         cout << "There are no pending tasks!";
     }
 }
 
-// Adds todo to 'todo.txt'
+// Adds task to 'task.txt'
 void add(string todopriority, string NewTodo)
 {
     ofstream fout("task.txt", ios::app);
@@ -89,7 +71,7 @@ void add(string todopriority, string NewTodo)
     fout.close();
 }
 
-// Deletes todo based upon number.
+// Deletes task based upon number.
 void del(int todoNum, bool checker)
 {
     ofstream fout("temp.txt");
@@ -127,7 +109,7 @@ void del(int todoNum, bool checker)
     }
 }
 
-// Marking todos as done (by adding todo from 'todo.txt' to 'done.txt' and deleting the todo)
+// Marking task as done (by adding task from 'task.txt' to 'completed.txt' and deleting the task)
 void markDone(int doneNum)
 {
     ofstream fout("completed.txt", ios::app);
@@ -195,7 +177,7 @@ void GenReport()
 
     if(pend > 0){
         sort(pendingtasks.begin(),pendingtasks.end(),[](string a,string b){
-            return a[0] >= b[0];
+            return a[0] <= b[0];
         });
         
         for(int i=0;i<pendingtasks.size();i++){
@@ -203,15 +185,13 @@ void GenReport()
         }
     }
 
-    cout << "Completed : " << comp << "\n";
+    cout << "\nCompleted : " << comp << "\n";
 
     if(comp > 0){
         for(int i=0;i<completedtasks.size();i++){
             cout << i+1 << ". " << completedtasks[i].substr(2) << "\n";
         }
     }
-
-    // cout << 1900 + gtm->tm_year << "-" << 1 + gtm->tm_mon << "-" << gtm->tm_mday << " Pending : " << pend << " Completed : " << comp;
 }
 
 
